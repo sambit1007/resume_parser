@@ -1,4 +1,4 @@
-## AI-Powered Resume Parser with Google Gemini
+# AI-Powered Resume Parser with Google Gemini
 This project is a Flask-based web application that intelligently parses resumes using Google's Gemini AI. It extracts key information like contact details, skills, education, and work history from PDF and DOCX files, stores it in a SQLite database, and provides a simple interface for searching and viewing candidates.
 
 ### Features
