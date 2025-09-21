@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block title %}View Resume: {{ resume.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="mb-0">{{ resume['name'] }}</h3>
+                <p class="mb-0 text-muted">{{ resume['email'] or 'No email found' }} | {{ resume['phone'] or 'No phone found' }}</p>
+            </div>
+            <a href="{{ url_for('search') }}" class="btn btn-secondary">← Back to Search</a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Skills</h5>
+                    <div class="mb-4">
+                        {% for skill in resume['skills'] | from_json | sort %}
+                            <span class="badge bg-primary fs-6 me-1 mb-1">{{ skill }}</span>
+                        {% else %}
+                            <p>No skills were extracted.</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <h5>Companies</h5>
+                    <ul class="list-group list-group-flush mb-4">
+                        {% for company in resume['companies'] | from_json %}
+                            <li class="list-group-item">{{ company }}</li>
+                        {% else %}
+                            <li class="list-group-item">No companies were extracted.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="col-md-6">
+                    <h5>Details</h5>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item"><strong>Location:</strong> {{ resume['current_location'] or 'N/A' }}</li>
+                        <li class="list-group-item"><strong>Uploaded On:</strong> {{ resume['upload_date'].split(' ')[0] }}</li>
+                        <li class="list-group-item"><strong>Original Filename:</strong> {{ resume['filename'] }}</li>
+                    </ul>
+                    
+                    <h5>Education</h5>
+                    <p>{{ resume['education'] or 'No education information was extracted.' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

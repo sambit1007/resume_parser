@@ -1,0 +1,7 @@
+Flask
+PyPDF2
+docx2txt
+dotenv
+google.generativeai
+google-api-python-client
+spacy

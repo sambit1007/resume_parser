@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+
+{% block title %}Welcome - Resume Parser{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="p-5 text-center bg-light rounded-3 mb-5">
+        <h1 class="display-4">Resume Parsing & Management System</h1>
+        <p class="lead col-lg-8 mx-auto">
+            Efficiently upload, parse, and search through candidate resumes. Extract key information like skills, contact details, and work experience in seconds.
+        </p>
+    </div>
+
+    <div class="row text-center mb-5">
+        <div class="col-md-6 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4>Live Dashboard</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h5>Total Resumes</h5>
+                            <p id="total-resumes" class="h2">...</p>
+                        </div>
+                        <div class="col-6">
+                            <h5>Top Skills</h5>
+                            <ul id="top-skills-list" class="list-group list-group-flush">
+                                <li class="list-group-item">Loading...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <h5 class="card-title">Upload New Resumes</h5>
+                    <p class="card-text">Upload one or multiple resumes (PDF or DOCX). The system will automatically parse and store them.</p>
+                    <a href="{{ url_for('upload_file') }}" class="btn btn-primary mt-auto">Go to Upload</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <h5 class="card-title">Search Candidates</h5>
+                    <p class="card-text">Search and filter through the entire database of candidates by name, skills, company, or location.</p>
+                    <a href="{{ url_for('search') }}" class="btn btn-success mt-auto">Go to Search</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/api/stats')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('total-resumes').textContent = data.total_resumes || '0';
+                const skillsList = document.getElementById('top-skills-list');
+                skillsList.innerHTML = '';
+                if (Object.keys(data.top_skills).length > 0) {
+                    for (const skill in data.top_skills) {
+                        const count = data.top_skills[skill];
+                        const listItem = document.createElement('li');
+                        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                        listItem.textContent = skill;
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-primary rounded-pill';
+                        badge.textContent = count;
+                        listItem.appendChild(badge);
+                        skillsList.appendChild(listItem);
+                    }
+                } else {
+                    skillsList.innerHTML = '<li class="list-group-item">No skills data yet.</li>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching stats:', error);
+                document.getElementById('total-resumes').textContent = 'Error';
+                document.getElementById('top-skills-list').innerHTML = '<li class="list-group-item text-danger">Could not load stats.</li>';
+            });
+    });
+</script>
+{% endblock %}
